@@ -88,6 +88,17 @@
   (major1) == 1 && (major2) == 2 && (minor) <= 0)
 #endif /* MIN_VERSION_random */
 
+/* package saveandrecover-0.1.0.0 */
+#ifndef VERSION_saveandrecover
+#define VERSION_saveandrecover "0.1.0.0"
+#endif /* VERSION_saveandrecover */
+#ifndef MIN_VERSION_saveandrecover
+#define MIN_VERSION_saveandrecover(major1,major2,minor) (\
+  (major1) <  0 || \
+  (major1) == 0 && (major2) <  1 || \
+  (major1) == 0 && (major2) == 1 && (minor) <= 0)
+#endif /* MIN_VERSION_saveandrecover */
+
 /* package scotty-0.12 */
 #ifndef VERSION_scotty
 #define VERSION_scotty "0.12"
