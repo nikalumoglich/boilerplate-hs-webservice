@@ -26,7 +26,7 @@ import Data.Aeson (FromJSON, ToJSON, decode)
 
 
 import qualified Data.Text as BSC
-import Data.Maybe (fromJust)
+import Data.Maybe (fromJust, isNothing)
 
 import Database.MySQL.Base
 
@@ -90,5 +90,19 @@ main = do
       if status == 200
         then do
           let jsonBody = getResponseBody response
-          json $ TE.decodeUtf8 jsonBody
-      else text "Entry Already Exist"
+          let address = maybeAddress jsonBody
+          json address
+      else text "Address not found"
+
+    get "/httprequestcity/:cep" $ do
+      _cep <- param "cep"
+      let requestURL = IBS.pack $ "cep/" ++ _cep
+      response <- makeRequest requestURL
+      let status = getResponseStatusCode response
+      if status == 200
+        then do
+          let jsonBody = getResponseBody response
+          let address = maybeAddress jsonBody
+          let addressCity = maybe "City not found" city address
+          text $ T.fromStrict addressCity
+      else text "City not found"
