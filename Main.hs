@@ -3,6 +3,7 @@
 module Main where
 
 import Model.Entry
+import Model.Address
 import Repository.EntryRepository
 
 import GHC.Generics
@@ -21,7 +22,7 @@ import Data.List ( find )
 
 import Text.Read (readMaybe)
 
-import Data.Aeson (FromJSON, ToJSON)
+import Data.Aeson (FromJSON, ToJSON, decode)
 
 
 import qualified Data.Text as BSC
@@ -39,6 +40,12 @@ transactional conn procedure = mask $ \restore -> do
   a <- restore procedure `onException` execute_ conn "ROLLBACK"
   execute_ conn "COMMIT"
   pure a
+
+endpoint :: [Char]
+endpoint = "am.apidev.ewally.com.br"
+
+makeRequest :: MonadIO m => IBS.ByteString -> m (Response C.ByteString)
+makeRequest path = httpLBS (setRequestHost "am.apidev.ewally.com.br" $ setRequestPath path defaultRequest)
 
 main :: IO ()
 main = do
@@ -78,10 +85,10 @@ main = do
     get "/httprequest/:cep" $ do
       _cep <- param "cep"
       let requestURL = IBS.pack $ "cep/" ++ _cep
-      response <- httpLBS (setRequestHost "am.apidev.ewally.com.br" $ setRequestPath requestURL defaultRequest)
+      response <- makeRequest requestURL
       let status = getResponseStatusCode response
       if status == 200
         then do
           let jsonBody = getResponseBody response
-          json >> text $ TE.decodeUtf8 jsonBody
+          json $ TE.decodeUtf8 jsonBody
       else text "Entry Already Exist"

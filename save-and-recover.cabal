@@ -19,12 +19,13 @@ extra-source-files:  CHANGELOG.md
 library
   exposed-modules:
       Model.Entry
+      Model.Address
   other-modules:
       Paths_saveandrecover
   build-depends:
       aeson
     , base >=4.9 && <5
-    --, bytestring
+    , bytestring
     --, cryptonite
     --, http-types
     , io-streams
